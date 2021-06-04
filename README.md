@@ -112,21 +112,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | What **payload** should we put in the UDP datagrams? |
 | | Musician uuid and his instrument sound. |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
-| | When need two maps:
-	<b>In musicians</b>, map &lt instrument, sound &gt to know what sound to emit. This is querried only when the musician is created.
-	<b>In auditors</b>, map &lt sound, instrument &gt to know what instrument made the sound he recieved. This is querried every time a datagram UDP is recieved.
-	These two are never updated and they are a reflexion of each other.
-	
-	We need two last map on auditor side:
-	<b>First one</b>: map &lt uuid, time of first activity &gt , this map uuid of musicians with their first activity date.
-	This map is used when auditor need to send JSON to tcp client. To decide if he has to send an entry or not,
-	he will check the second map. If the uuid has send a message less than 5 seconds ago, he is alive and sent in JSON.
-	Otherwise, he is dead and removed from this data structure. A new entry is created when a musician emit sound for the first time
-	or when he plays again after having being considered dead.
-	
-	<b>Second one</b>: map &lt uuid, time last message &gt , this map stores the time of the last message from a musician.
-	This is updated everytime a musician send a datagram. An entry is removed when an entry is removed from previous map, it
-	means thant the musician is dead, so we don't need to keep any information about him.|
+| | When need two maps:</br><b>In musicians</b>, map < instrument, sound > to know what sound to emit. This is querried only when the musician is created.</br><b>In auditors</b>, map < sound, instrument > to know what instrument made the sound he recieved. This is querried every time a datagram UDP is recieved.</br>These two are never updated and they are a reflexion of each other.</br><br>We need two last maps on auditor side:</br><b>First one</b>: map < uuid, time of first activity >, this maps uuid of musicians with their first activity date.</br>This map is used when auditor needs to send JSON to a TCP client. To decide if he has to send an entry or not,</br>he will check the second map. If the uuid has send a message less than 5 seconds ago, he is alive and sent in JSON.</br>Otherwise, he is dead and removed from both data structures. A new entry is created when a musician emits a sound for the first time</br>or when he plays again after having being considered dead.</br><b>Second one</b>: map < uuid, time last message >, this map stores the time of the last message from a musician.</br>This is updated everytime a musician sends a datagram. An entry is removed when the corresponding entry is removed from previous map. It means thant the musician is dead, so we don't need to keep any information about him.|
 
 
 ## Task 2: implement a "musician" Node.js application
