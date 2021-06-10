@@ -120,21 +120,21 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | In a JavaScript program, if we have an object, how can we **serialize it in JSON**? |
-| | *Enter your response here...*  |
+| | We can do it with [<i>stringify</i>](http://www.tutorialspark.com/javascript/JavaScript_JSON_Parsing_Serialization.php#:~:text=Javascript%20JSON%3A%20Objects&text=stringify()%20%3A%20To%20serialize%20JavaScript,into%20a%20native%20JavaScript%20value.&text=The%20JSON%20string%20can%20be,create%20an%20appropriate%20JavaScript%20value.) method.  |
 |Question | What is **npm**?  |
-| | *Enter your response here...*  |
+| | [<i>Npm</i>](https://www.npmjs.com/) is the node package manager, a registry and a CLI.  |
 |Question | What is the `npm install` command and what is the purpose of the `--save` flag?  |
-| | *Enter your response here...*  |
+| | It installs a package and his dependencies. [`--save`](https://www.geeksforgeeks.org/what-is-the-meaning-of-save-for-npm-install/#:~:text=If%20you%20are%20using%20a,json%20file.) was used to install a package into the dependency list in package.json file. This flag is not requiered anymore since npm 5.0.0  |
 |Question | How can we use the `https://www.npmjs.com/` web site?  |
-| | *Enter your response here...*  |
+| | This quote found on the npm web site sums it up `Use the website to discover packages, set up profiles, and manage other aspects of your npm experience. For example, you can set up organizations to manage access to public or private packages.` |
 |Question | In JavaScript, how can we **generate a UUID** compliant with RFC4122? |
-| | *Enter your response here...*  |
+| | The [package rfc4122](https://www.npmjs.com/package/rfc4122) does it. It has implement all 5 versions of rfc4122. </br>In this lab, we have chosen to use the version 4 (f for faster) of rfc4122. Its generates UUID randomly which seems appropriate in our context and simple to implement. Be aware that there is a small risk of collision.  |
 |Question | In Node.js, how can we execute a function on a **periodic** basis? |
-| | *Enter your response here...*  |
+| | The function [setInterval](https://www.w3schools.com/jsref/met_win_setinterval.asp) does it.  |
 |Question | In Node.js, how can we **emit UDP datagrams**? |
-| | *Enter your response here...*  |
+| | Using the dgram package. We first create a socket with `dgram.createSocket('udp4')` and then, we emit UDP datagrams with `send` method from our socket.  |
 |Question | In Node.js, how can we **access the command line arguments**? |
-| | *Enter your response here...*  |
+| | [Command line arguments](https://nodejs.org/en/knowledge/command-line/how-to-parse-command-line-arguments/) are stored in an array `process.argv`.  |
 
 
 ## Task 3: package the "musician" app in a Docker image
