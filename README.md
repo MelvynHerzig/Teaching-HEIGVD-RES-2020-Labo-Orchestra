@@ -160,9 +160,9 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | ---  |
 |Question | With Node.js, how can we listen for UDP datagrams in a multicast group? |
-| | *Enter your response here...*  |
+| | First, we create a socket with `createSocket('udp4')`.<br> Then, with `bind`, we bind the socket to a port and we execute a lambda that makes `addMemberShip` to join a multicast group . |
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
-| | *Enter your response here...* |
+| | In a first approach, we are building two maps: one that maps sound to instrument and the other that maps </br>instrument to sound. Thoses maps are made out of the two arrays that are defined in `protocole.js` from musician and auditor. Secondly, we create a last map that matches uuid to last message datetime and first message datetime on auditor side.</br> We use it like this `new Map([iterable])`.|
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
 | | *Enter your response here...* |
 |Question | When and how do we **get rid of inactive players**?  |
