@@ -142,17 +142,18 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | How do we **define and build our own Docker image**?|
-| | *Enter your response here...*  |
+| | We use a Dockerfile. Its contains the instructions to build the image.<br> Then, we use the command [`docker build`](https://docs.docker.com/engine/reference/commandline/build/).  |
 |Question | How can we use the `ENTRYPOINT` statement in our Dockerfile?  |
-| | *Enter your response here...*  |
+| | This statement is used to indicate to our container what he has to run/execute on start. </br> In our case, we use two arguments: `node` and `"/opt/app/musician.js"`. </br> Basically it means: run "node /opt/app/musician.js" on start up. In other words, run our application. |
 |Question | After building our Docker image, how do we use it to **run containers**?  |
-| | *Enter your response here...*  |
+| | We use the `docker run` command.</br>
+`docker run <name of docker image> <instrument name>`</br> The instrument name will be appended to entrypoint execution.|
 |Question | How do we get the list of all **running containers**?  |
-| | *Enter your response here...*  |
+| | We get such a list with `docker ps`. |
 |Question | How do we **stop/kill** one running container?  |
-| | *Enter your response here...*  |
+| | We execute `docker kill <container name>`.  We can pass as argument `$(docker ps -qa)` to kill all running containers. |
 |Question | How can we check that our running containers are effectively sending UDP datagrams?  |
-| | *Enter your response here...*  |
+| | We can use Wireshark to scan the docker network interface.  |
 
 
 ## Task 4: implement an "auditor" Node.js application
