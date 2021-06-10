@@ -146,8 +146,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How can we use the `ENTRYPOINT` statement in our Dockerfile?  |
 | | This statement is used to indicate to our container what he has to run/execute on start. </br> In our case, we use two arguments: `node` and `"/opt/app/musician.js"`. </br> Basically it means: run "node /opt/app/musician.js" on start up. In other words, run our application. |
 |Question | After building our Docker image, how do we use it to **run containers**?  |
-| | We use the `docker run` command.</br>
-`docker run <name of docker image> <instrument name>`</br> The instrument name will be appended to entrypoint execution.|
+| | We use the `docker run` command.</br> `docker run <name of docker image> <instrument name>`</br> The instrument name will be appended to entrypoint execution.|
 |Question | How do we get the list of all **running containers**?  |
 | | We get such a list with `docker ps`. |
 |Question | How do we **stop/kill** one running container?  |
