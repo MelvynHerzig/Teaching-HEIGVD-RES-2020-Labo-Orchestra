@@ -164,11 +164,11 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
 | | In a first approach, we are building two maps: one that maps sound to instrument and the other that maps </br>instrument to sound. Thoses maps are made out of the two arrays that are defined in `protocole.js` from musician and auditor. Secondly, we create a last map that matches uuid to last message datetime and first message datetime on auditor side.</br> We use it like this `new Map([iterable])`.|
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
-| | *Enter your response here...* |
+| | Moment.js will be creating datetime objects.</br>We can get the current date with `moment()`.</br> We get a bunch of functions to  mutate datetime object `substract or add`</br> Finally, we can format datetime with `format`. In order to match the example, we do not need arguments.|
 |Question | When and how do we **get rid of inactive players**?  |
-| | *Enter your response here...* |
+| | We get rid of inactive players when an auditor gets a TCP connection. Before packaging the list, he will check each entry of the  map (uuid, musician) and remove each musician that has not sent any noise since 5 seconds.|
 |Question | How do I implement a **simple TCP server** in Node.js?  |
-| | *Enter your response here...* |
+| | In order to create a simple TCP server, we can use the package  `net`. Then, we spawn our serveur `net.createServer` and we define a callback function `listen` specifying a port and a host. |
 
 
 ## Task 5: package the "auditor" app in a Docker image
@@ -176,7 +176,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | How do we validate that the whole system works, once we have built our Docker image? |
-| | *Enter your response here...* |
+| | We execute some tests by launching the script `validate.sh`. It will create some musicians and auditors. Then, it checks if the auditors can get queried by TCP. Finally, it checks if auditors are getting updated when an auditor dies. |
 
 
 ## Constraints
