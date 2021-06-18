@@ -112,7 +112,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | What **payload** should we put in the UDP datagrams? |
 | | Musician uuid and his instrument sound. |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
-| | When need two maps:</br><b>In musicians</b>, map < instrument, sound > to know what sound to emit. This is querried only when the musician is created.</br><b>In auditors</b>, map < sound, instrument > to know what instrument made the sound he recieved. This is querried every time a datagram UDP is recieved.</br>These two are never updated and they are a reflexion of each other.</br><br>We need two last maps on auditor side:</br><b>First one</b>: map < uuid, time of first activity >, this maps uuid of musicians with their first activity date.</br>This map is used when auditor needs to send JSON to a TCP client. To decide if he has to send an entry or not,</br>he will check the second map. If the uuid has send a message less than 5 seconds ago, he is alive and sent in JSON.</br>Otherwise, he is dead and removed from both data structures. A new entry is created when a musician emits a sound for the first time</br>or when he plays again after having being considered dead.</br><b>Second one</b>: map < uuid, time last message >, this map stores the time of the last message from a musician.</br>This is updated everytime a musician sends a datagram. An entry is removed when the corresponding entry is removed from previous map. It means thant the musician is dead, so we don't need to keep any information about him.|
+| | When need two maps:</br><b>In musicians</b>, map < instrument, sound > to know what sound to emit. This is querried only when the musician is created.</br><b>In auditors</b>, map < sound, instrument > to know what instrument made the sound he recieved. This is querried every time a datagram UDP is recieved.</br>These two are never updated and they are a reflexion of each other.</br><br>We need one last maps on auditor side:</br>map < uuid, instrument, time of first activity, time of last activity ></br>The map will be updated everytime a musician sends a datagram. The corresponding musician last activity will be updated to the current date.</br>To check if a musician is alive, the auditor wait for a TCP request, then check for all musicians if their last time of activity is greater than 5 seconds ago.</br>The time of last activity of every musicians will not be added in the JSON payload of the response.
 
 
 ## Task 2: implement a "musician" Node.js application
@@ -152,7 +152,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How do we **stop/kill** one running container?  |
 | | We execute `docker kill <container name>`.  We can pass as argument `$(docker ps -qa)` to kill all running containers. |
 |Question | How can we check that our running containers are effectively sending UDP datagrams?  |
-| | We can use Wireshark to scan the docker network interface.  |
+| | We can use Wireshark or tcpdump to scan the docker network interface.  |
 
 
 ## Task 4: implement an "auditor" Node.js application
@@ -164,7 +164,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
 | | In a first approach, we are building two maps: one that maps sound to instrument and the other that maps </br>instrument to sound. Thoses maps are made out of the two arrays that are defined in `protocole.js` from musician and auditor. Secondly, we create a last map that matches uuid to last message datetime and first message datetime on auditor side.</br> We use it like this `new Map([iterable])`.|
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
-| | Moment.js will be creating datetime objects.</br>We can get the current date with `moment()`.</br> We get a bunch of functions to  mutate datetime object `substract or add`</br> Finally, we can format datetime with `format`. In order to match the example, we do not need arguments.|
+| | Moment.js will be creating datetime objects.</br>We can get the current date with `moment()`.</br> We get a bunch of functions to  mutate datetime object `substract or add`</br>We used method `diff` to compare 2 moments. The return value is in milliseconds, so we check if the value is greater than 5000 to remove a musician.</br>Finally, we can format datetime with `format`. In order to match the example, we do not need arguments.|
 |Question | When and how do we **get rid of inactive players**?  |
 | | We get rid of inactive players when an auditor gets a TCP connection. Before packaging the list, he will check each entry of the  map (uuid, musician) and remove each musician that has not sent any noise since 5 seconds.|
 |Question | How do I implement a **simple TCP server** in Node.js?  |
