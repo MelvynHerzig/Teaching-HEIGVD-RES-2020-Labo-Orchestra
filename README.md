@@ -104,15 +104,15 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | --- | --- |
 |Question | How can we represent the system in an **architecture diagram**, which gives information both about the Docker containers, the communication protocols and the commands? |
-| | *Insert your diagram here...* |
+| | ![issue](images/step1_1.png) |
 |Question | Who is going to **send UDP datagrams** and **when**? |
-| | *Enter your response here...* |
+| | Musicians containers are going to send UDP datagrams every second. |
 |Question | Who is going to **listen for UDP datagrams** and what should happen when a datagram is received? |
-| | *Enter your response here...* |
+| | Every auditor containers are going to recieve UDP datagrams. When they recieve a datagram, they will update a table that keeps track of alive musicians (that have send data less than 5 seconds ago). |
 |Question | What **payload** should we put in the UDP datagrams? |
-| | *Enter your response here...* |
+| | Musician uuid and his instrument sound. |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
-| | *Enter your response here...* |
+| | When need two maps:</br><b>In musicians</b>, map < instrument to sound > to know what sound to emit. This is querried only when the musician is created.</br><b>In auditors</b>, map < sound to instrument > to know what instrument made the sound he recieved. This is querried every time a datagram UDP is recieved.</br>These two are never updated and they are a reflexion of each other.</br><br>We need one last maps on auditor side:</br>map < uuid to instrument, time of first activity, time of last activity ></br>The map will be updated everytime a musician sends a datagram. The corresponding musician last activity will be updated to the current date.</br>To check if a musician need to be removed, the auditor wait for a TCP request, then for all musicians :</br> - if his last activity time is greater than 5 seconds ago, the musician will be removed </br> - else he will be added in the JSON payload</br>The time of last activity of every musicians will not be added in the JSON payload of the response.
 
 
 ## Task 2: implement a "musician" Node.js application
@@ -120,21 +120,21 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | In a JavaScript program, if we have an object, how can we **serialize it in JSON**? |
-| | *Enter your response here...*  |
+| | We can do it with [<i>stringify</i>](http://www.tutorialspark.com/javascript/JavaScript_JSON_Parsing_Serialization.php#:~:text=Javascript%20JSON%3A%20Objects&text=stringify()%20%3A%20To%20serialize%20JavaScript,into%20a%20native%20JavaScript%20value.&text=The%20JSON%20string%20can%20be,create%20an%20appropriate%20JavaScript%20value.) method.  |
 |Question | What is **npm**?  |
-| | *Enter your response here...*  |
+| | [<i>Npm</i>](https://www.npmjs.com/) is the node package manager, a registry and a CLI.  |
 |Question | What is the `npm install` command and what is the purpose of the `--save` flag?  |
-| | *Enter your response here...*  |
+| | It installs a package and his dependencies. [`--save`](https://www.geeksforgeeks.org/what-is-the-meaning-of-save-for-npm-install/#:~:text=If%20you%20are%20using%20a,json%20file.) was used to install a package into the dependency list in package.json file. This flag is not requiered anymore since npm 5.0.0  |
 |Question | How can we use the `https://www.npmjs.com/` web site?  |
-| | *Enter your response here...*  |
+| | This quote found on the npm web site sums it up `Use the website to discover packages, set up profiles, and manage other aspects of your npm experience. For example, you can set up organizations to manage access to public or private packages.` |
 |Question | In JavaScript, how can we **generate a UUID** compliant with RFC4122? |
-| | *Enter your response here...*  |
+| | The [package rfc4122](https://www.npmjs.com/package/rfc4122) does it. It has implement all 5 versions of rfc4122. </br>In this lab, we have chosen to use the version 4 (f for faster) of rfc4122. Its generates UUID randomly which seems appropriate in our context and simple to implement. Be aware that there is a small risk of collision.  |
 |Question | In Node.js, how can we execute a function on a **periodic** basis? |
-| | *Enter your response here...*  |
+| | The function [setInterval](https://www.w3schools.com/jsref/met_win_setinterval.asp) does it.  |
 |Question | In Node.js, how can we **emit UDP datagrams**? |
-| | *Enter your response here...*  |
+| | Using the dgram package. We first create a socket with `dgram.createSocket('udp4')` and then, we emit UDP datagrams with `send` method from our socket.  |
 |Question | In Node.js, how can we **access the command line arguments**? |
-| | *Enter your response here...*  |
+| | [Command line arguments](https://nodejs.org/en/knowledge/command-line/how-to-parse-command-line-arguments/) are stored in an array `process.argv`.  |
 
 
 ## Task 3: package the "musician" app in a Docker image
@@ -142,17 +142,17 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | How do we **define and build our own Docker image**?|
-| | *Enter your response here...*  |
+| | We use a Dockerfile. Its contains the instructions to build the image.<br> Then, we use the command [`docker build`](https://docs.docker.com/engine/reference/commandline/build/).  |
 |Question | How can we use the `ENTRYPOINT` statement in our Dockerfile?  |
-| | *Enter your response here...*  |
+| | This statement is used to indicate to our container what he has to run/execute on start. </br> In our case, we use two arguments: `node` and `"/opt/app/musician.js"`. </br> Basically it means: run "node /opt/app/musician.js" on start up. In other words, run our application. |
 |Question | After building our Docker image, how do we use it to **run containers**?  |
-| | *Enter your response here...*  |
+| | We use the `docker run` command.</br> `docker run <name of docker image> <instrument name>`</br> The instrument name will be appended to entrypoint execution.|
 |Question | How do we get the list of all **running containers**?  |
-| | *Enter your response here...*  |
+| | We get such a list with `docker ps`. |
 |Question | How do we **stop/kill** one running container?  |
-| | *Enter your response here...*  |
+| | We execute `docker kill <container name>`.  We can pass as argument `$(docker ps -qa)` to kill all running containers. |
 |Question | How can we check that our running containers are effectively sending UDP datagrams?  |
-| | *Enter your response here...*  |
+| | We can use Wireshark or tcpdump to scan the docker network interface.  |
 
 
 ## Task 4: implement an "auditor" Node.js application
@@ -160,15 +160,15 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | ---  |
 |Question | With Node.js, how can we listen for UDP datagrams in a multicast group? |
-| | *Enter your response here...*  |
+| | First, we create a socket with `createSocket('udp4')`.<br> Then, with `bind`, we bind the socket to a port and we execute a lambda that makes `addMemberShip` to join a multicast group . |
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
-| | *Enter your response here...* |
+| | In a first approach, we are building two maps: one that maps sound to instrument and the other that maps </br>instrument to sound. Thoses maps are made out of the two arrays that are defined in `protocole.js` from musician and auditor. Secondly, we create a last map that matches uuid to last message datetime and first message datetime on auditor side.</br> We use it like this `new Map([iterable])`.|
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
-| | *Enter your response here...* |
+| | Moment.js will be creating datetime objects.</br>We can get the current date with `moment()`.</br> We get a bunch of functions to  mutate datetime object `substract or add`</br>We used method `diff` to compare 2 moments. The return value is in milliseconds, so we check if the value is greater than 5000 to remove a musician.</br>Finally, we can format datetime with `format`. In order to match the example, we do not need arguments.|
 |Question | When and how do we **get rid of inactive players**?  |
-| | *Enter your response here...* |
+| | We get rid of inactive players when an auditor gets a TCP connection. Before packaging the list, he will check each entry of the  map (uuid, musician) and remove each musician that has not sent any noise since 5 seconds.|
 |Question | How do I implement a **simple TCP server** in Node.js?  |
-| | *Enter your response here...* |
+| | In order to create a simple TCP server, we can use the package  `net`. Then, we spawn our serveur `net.createServer` and we define a callback function `listen` specifying a port and a host. |
 
 
 ## Task 5: package the "auditor" app in a Docker image
@@ -176,7 +176,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | How do we validate that the whole system works, once we have built our Docker image? |
-| | *Enter your response here...* |
+| | We execute some tests by launching the script `validate.sh`. It will create some musicians and auditors. Then, it checks if the auditors can get queried by TCP. Finally, it checks if auditors are getting updated when an auditor dies. |
 
 
 ## Constraints
